@@ -1,0 +1,37 @@
+{
+  "Cervical Spine": {
+    "X-Ray": {
+       "path":"/resources/cervical/xray/"
+     },
+    "CT Scan": {
+       "path":"/resources/cervical/ctscan/"
+     },
+    "MRI Scan": {
+       "path":"/resources/cervical/mriscan/"
+     }
+  },
+
+  "Full Spine": {
+    "X-Ray": {
+       "path":"/resources/full/xray/"
+     },
+    "CT Scan": {
+       "path":"/resources/full/ctscan/"
+     },
+    "MRI Scan": {
+       "path":"/resources/full/mriscan/"
+     }
+  },
+
+  "Lumbar Spine": {
+    "X-Ray": {
+       "path":"/resources/lumbar/xray/"
+     },
+    "CT Scan": {
+       "path":"/resources/lumbar/ctscan/"
+     },
+    "MRI Scan": {
+       "path":"/resources/lumbar/mriscan/"
+     }
+  }
+}
