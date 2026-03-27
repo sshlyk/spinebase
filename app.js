@@ -7,9 +7,12 @@ const app = document.getElementById('app');
 const viewContainer = document.getElementById('view-container');
 const breadcrumb = document.getElementById('breadcrumb');
 const backBtn = document.getElementById('back-btn');
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
 
 let db = null;
 let stateStack = [];
+let searchIndex = [];
 
 // Handle Browser Back Button
 window.onpopstate = () => {
@@ -25,11 +28,79 @@ async function init() {
         const res = await fetch(CONFIG.MANIFEST_PATH);
         if (!res.ok) throw new Error("Could not fetch structure.json. Please run via local server.");
         db = await res.json();
+        buildSearchIndex(db);
         resetToHome();
     } catch (e) {
         viewContainer.innerHTML = `<div class="status-msg">Error: ${e.message}</div>`;
     }
 }
+
+// --- Search Functionality ---
+
+function buildSearchIndex(data) {
+    searchIndex = [];
+    Object.keys(data).forEach(cat => {
+        Object.keys(data[cat]).forEach(mod => {
+            const gridData = data[cat][mod];
+            gridData.content.forEach(itemName => {
+                searchIndex.push({
+                    category: cat,
+                    modality: mod,
+                    path: gridData.path,
+                    itemName: itemName
+                });
+            });
+        });
+    });
+}
+
+function fuzzySearch(query) {
+    if (!query) return [];
+    // Convert 'cva' into 'c.*?v.*?a' for fuzzy matching
+    const pattern = query.split('').map(char => char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('.*?');
+    const regex = new RegExp(pattern, 'i');
+    return searchIndex.filter(item => regex.test(item.itemName));
+}
+
+searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.trim();
+    if (query.length === 0) {
+        searchResults.style.display = 'none';
+        return;
+    }
+    const matches = fuzzySearch(query);
+    displaySearchResults(matches);
+});
+
+// Close search dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-container')) {
+        searchResults.style.display = 'none';
+    }
+});
+
+function displaySearchResults(matches) {
+    searchResults.innerHTML = '';
+    if (matches.length === 0) {
+        searchResults.innerHTML = '<div class="search-item"><strong>No measurements found</strong></div>';
+    } else {
+        matches.forEach(match => {
+            const div = document.createElement('div');
+            div.className = 'search-item';
+            div.innerHTML = `<strong>${match.itemName}</strong><small>${match.category} > ${match.modality}</small>`;
+            div.onclick = () => {
+                searchResults.style.display = 'none';
+                searchInput.value = '';
+                searchInput.blur();
+                loadSearchItem(match);
+            };
+            searchResults.appendChild(div);
+        });
+    }
+    searchResults.style.display = 'block';
+}
+
+// --- Navigation & Core Logic ---
 
 function resetToHome() {
     stateStack = [];
@@ -61,9 +132,9 @@ function updateUI(titlePath, isClinical = false) {
     }
     
     // Bulletproof Scroll Reset
-    window.scrollTo(0, 0); 
-    document.body.scrollTop = 0; 
-    document.documentElement.scrollTop = 0; 
+    window.scrollTo(0, 0);
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
 }
 
 function getRelPath(p) {
@@ -96,7 +167,7 @@ function render() {
         });
         viewContainer.appendChild(list);
         updateUI([]);
-    } 
+    }
     else if (current.type === 'category') {
         viewContainer.classList.add('centered');
         const list = document.createElement('div');
@@ -148,6 +219,33 @@ async function loadItem(rawPath, itemName) {
 
         stateStack.push({ type: 'content', label: itemName, html: html });
         history.pushState({ depth: stateStack.length }, itemName);
+        render();
+    } catch (e) {
+        alert("Document unavailable.");
+    }
+}
+
+async function loadSearchItem(match) {
+    try {
+        const baseDir = getRelPath(match.path);
+        const res = await fetch(`${baseDir}${match.itemName}/index.html`);
+        let html = await res.text();
+        const itemFolder = `${baseDir}${match.itemName}/`;
+        html = html.replace(/src=["'](?:\.\/)?images\/(.*?)["']/g, (m, f) => `src="${itemFolder}images/${f}"`);
+
+        // Push fake states sequentially so that if a user clicks the "Back" button,
+        // it gracefully dumps them out into the parent categories rather than breaking navigation.
+        stateStack = []; // Reset stack first
+        
+        stateStack.push({ type: 'category', label: match.category, data: db[match.category] });
+        history.pushState({ depth: stateStack.length }, match.category);
+
+        stateStack.push({ type: 'grid', label: match.modality, data: db[match.category][match.modality] });
+        history.pushState({ depth: stateStack.length }, match.modality);
+
+        stateStack.push({ type: 'content', label: match.itemName, html: html });
+        history.pushState({ depth: stateStack.length }, match.itemName);
+        
         render();
     } catch (e) {
         alert("Document unavailable.");
