@@ -5,131 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SpineBase Explorer</title>
     <style>
-        :root {
-            --primary: #2563eb;
-            --text: #1e293b;
-            --muted: #64748b;
-            --btn-bg: rgba(255, 255, 255, 0.75); 
-            --clinical-bg: #ffffff;
-        }
-
+        :root { --primary: #2563eb; --text: #1e293b; --muted: #64748b; --btn-bg: rgba(255, 255, 255, 0.75); --clinical-bg: #ffffff; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        /* SCROLL & STICKY FIX: Removed overflow-x: hidden. 
-           Any overflow property on ancestors breaks position: sticky. */
-        html, body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: var(--text);
-            background-color: #f1f5f9;
-            width: 100%;
-        }
-
-        /* Clinical Mode: Removes distractions for document viewing */
+        html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: var(--text); background-color: #f1f5f9; width: 100%; }
         body.clinical-mode { background-color: var(--clinical-bg); }
         body.clinical-mode #app { background-image: none !important; background-color: white; }
-
-        #app {
-            display: flex;
-            flex-direction: column;
-            min-height: 100dvh; 
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: contain; 
-            background-color: #f8fafc;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-
-        header {
-            position: sticky;
-            top: 0;
-            flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.92); /* Slightly transparent */
-            backdrop-filter: blur(10px); /* Frosted glass effect */
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid #e2e8f0;
-            z-index: 1000; /* High z-index keeps it above all content */
-            padding-top: env(safe-area-inset-top);
-        }
-
-        .brand-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px 5px 20px;
-        }
-
-        .brand-banner {
-            font-size: 26px;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: -0.5px;
-            cursor: pointer;
-        }
-
-        .about-link {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--muted);
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        .nav-section {
-            padding: 5px 20px 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-height: 50px;
-        }
-
-        .back-btn {
-            background: #fff;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            padding: 6px 12px;
-            color: var(--primary);
-            font-weight: 700;
-            cursor: pointer;
-            display: none;
-            font-size: 13px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .breadcrumb {
-            font-size: 14px;
-            color: var(--muted);
-            font-weight: 500;
-            line-height: 1.3;
-        }
-
-        main {
-            flex-grow: 1;
-            padding: 20px;
-            display: block; 
-        }
-
-        main.centered { 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-        }
-
+        #app { display: flex; flex-direction: column; min-height: 100dvh; width: 100%; max-width: 600px; margin: 0 auto; background-repeat: no-repeat; background-position: center; background-size: contain; background-color: #f8fafc; padding-bottom: env(safe-area-inset-bottom); }
+        header { position: sticky; top: 0; flex-shrink: 0; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid #e2e8f0; z-index: 1000; padding-top: env(safe-area-inset-top); }
+        .brand-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px 5px 20px; }
+        .brand-banner { font-size: 26px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; cursor: pointer; }
+        .about-link { font-size: 14px; font-weight: 700; color: var(--muted); cursor: pointer; text-transform: uppercase; }
+        .nav-section { padding: 5px 20px 15px 20px; display: flex; align-items: center; gap: 12px; min-height: 50px; }
+        .back-btn { background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 12px; color: var(--primary); font-weight: 700; cursor: pointer; display: none; font-size: 13px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .breadcrumb { font-size: 14px; color: var(--muted); font-weight: 500; line-height: 1.3; }
+        main { flex-grow: 1; padding: 20px; display: block; }
+        main.centered { display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .menu-list {
             display: flex;
             flex-direction: column;
             gap: 18px;
             width: 100%;
-            max-width: 92%;
+            /* Added alignment properties */
+            align-items: center;
+            justify-content: center;
         }
 
         .menu-item {
-            width: 100%;
+            /* Set a specific width or max-width to see the centering effect */
+            width: 90%;
+            max-width: 400px;
             padding: 26px 20px;
             background: var(--btn-bg);
             border: 1px solid rgba(255, 255, 255, 0.5);
@@ -141,233 +45,32 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 16px rgba(0,0,0,0.06);
             transition: all 0.2s ease;
+            /* Ensures button itself is centered if width < 100% */
+            margin: 0 auto;
         }
-
-        .menu-item:active { transform: scale(0.97); }
-
-        .item-card {
-            background: var(--btn-bg);
-            border-radius: 14px;
-            margin-bottom: 25px;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            width: 100%;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        .item-card img {
-            width: 100%;
-            height: 280px;
-            object-fit: contain;
-            background: #fff;
-            padding-top: 15px;
-        }
-
-        .item-card .label {
-            padding: 18px;
-            font-weight: 700;
-            font-size: 18px;
-            text-align: center;
-            background: #fff;
-        }
-
-        #content-viewer, .about-content {
-            display: none;
-            background: white;
-            min-height: 100%;
-            padding: 20px;
-            line-height: 1.7;
-            font-size: 16px;
-        }
-
+        .item-card { background: var(--btn-bg); border-radius: 14px; margin-bottom: 25px; overflow: hidden; backdrop-filter: blur(10px); width: 100%; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .item-card img { width: 100%; height: 280px; object-fit: contain; background: #fff; padding-top: 15px; }
+        .item-card .label { padding: 18px; font-weight: 700; font-size: 18px; text-align: center; background: #fff; }
+        #content-viewer { display: none; background: white; min-height: 100%; padding: 20px; line-height: 1.7; font-size: 16px; }
         #content-viewer img { max-width: 100%; height: auto; display: block; margin: 10px auto; }
-        .about-content img { width: 100%; height: auto; margin-top: 30px; border-radius: 10px; }
         .status-msg { padding: 40px; text-align: center; font-weight: 600; color: var(--muted); }
     </style>
 </head>
 <body>
-<div id="app">
-    <header>
-        <div class="brand-row">
-            <div class="brand-banner" onclick="resetToHome()">SpineBase</div>
-            <div class="about-link" onclick="showAboutUs()">About Us</div>
-        </div>
-        <div class="nav-section">
-            <button id="back-btn" class="back-btn" onclick="goBack()">← Back</button>
-            <div id="breadcrumb" class="breadcrumb">A centralized resource for spine imaging measurements.</div>
-        </div>
-    </header>
-    <main id="view-container" class="centered"></main>
-</div>
-
-<script>
-    const CONFIG = {
-        MANIFEST_PATH: "./structure.json",
-        WELCOME: "A centralized resource for spine imaging measurements."
-    };
-
-    const app = document.getElementById('app');
-    const viewContainer = document.getElementById('view-container');
-    const breadcrumb = document.getElementById('breadcrumb');
-    const backBtn = document.getElementById('back-btn');
-
-    let db = null;
-    let stateStack = [];
-
-    window.onpopstate = () => {
-        if (stateStack.length > 0) {
-            stateStack.pop();
-            render();
-        }
-    };
-
-    async function init() {
-        app.style.backgroundImage = "url('./assets/spine-background.png')";
-        try {
-            const res = await fetch(CONFIG.MANIFEST_PATH);
-            if (!res.ok) throw new Error("Could not fetch structure.json. Please run via local server.");
-            db = await res.json();
-            resetToHome();
-        } catch (e) {
-            viewContainer.innerHTML = `<div class="status-msg">Error: ${e.message}</div>`;
-        }
-    }
-
-    function resetToHome() {
-        stateStack = [];
-        render();
-    }
-
-    function goBack() {
-        window.history.back();
-    }
-
-    function showAboutUs() {
-        stateStack.push({ type: 'about', label: 'About Us' });
-        history.pushState({ depth: stateStack.length }, "About Us");
-        render();
-    }
-
-    function updateUI(titlePath, isClinical = false) {
-        breadcrumb.innerText = titlePath.length > 0 ? titlePath.join(' > ') : CONFIG.WELCOME;
-        backBtn.style.display = stateStack.length > 0 ? 'block' : 'none';
-        
-        if (isClinical) {
-            document.body.classList.add('clinical-mode');
-        } else {
-            document.body.classList.remove('clinical-mode');
-        }
-        
-        // Bulletproof scroll reset across all mobile platforms
-        window.scrollTo(0, 0); 
-        document.body.scrollTop = 0; 
-        document.documentElement.scrollTop = 0; 
-    }
-
-    function getRelPath(p) {
-        let clean = p.startsWith('/') ? p.substring(1) : p;
-        return `./${clean}`;
-    }
-
-    function render() {
-        const depth = stateStack.length;
-        const current = stateStack[depth - 1];
-        const titlePath = stateStack.map(s => s.label);
-        
-        viewContainer.innerHTML = '';
-        viewContainer.style.display = 'block';
-
-        if (depth === 0) {
-            viewContainer.classList.add('centered');
-            const list = document.createElement('div');
-            list.className = 'menu-list';
-            Object.keys(db).forEach(cat => {
-                const btn = document.createElement('button');
-                btn.className = 'menu-item';
-                btn.innerText = cat;
-                btn.onclick = () => {
-                    stateStack.push({ type: 'category', label: cat, data: db[cat] });
-                    history.pushState({ depth: stateStack.length }, cat);
-                    render();
-                };
-                list.appendChild(btn);
-            });
-            viewContainer.appendChild(list);
-            updateUI([]);
-        } 
-        else if (current.type === 'category') {
-            viewContainer.classList.add('centered');
-            const list = document.createElement('div');
-            list.className = 'menu-list';
-            Object.keys(current.data).forEach(mod => {
-                const btn = document.createElement('button');
-                btn.className = 'menu-item';
-                btn.innerText = mod;
-                btn.onclick = () => {
-                    stateStack.push({ type: 'grid', label: mod, data: current.data[mod] });
-                    history.pushState({ depth: stateStack.length }, mod);
-                    render();
-                };
-                list.appendChild(btn);
-            });
-            viewContainer.appendChild(list);
-            updateUI(titlePath);
-        }
-        else if (current.type === 'grid') {
-            viewContainer.classList.remove('centered');
-            const gridData = current.data;
-            const base = getRelPath(gridData.path);
-
-            gridData.content.forEach(itemName => {
-                const card = document.createElement('div');
-                card.className = 'item-card';
-                card.innerHTML = `
-                    <img src="${base}${itemName}/thumbnail.png" onerror="this.style.display='none'">
-                    <div class="label">${itemName}</div>`;
-                card.onclick = () => loadItem(gridData.path, itemName);
-                viewContainer.appendChild(card);
-            });
-            updateUI(titlePath);
-        }
-        else if (current.type === 'content') {
-            viewContainer.classList.remove('centered');
-            viewContainer.innerHTML = `<div id="content-viewer" style="display:block">${current.html}</div>`;
-            updateUI(titlePath, true);
-        }
-        else if (current.type === 'about') {
-            viewContainer.classList.remove('centered');
-            viewContainer.innerHTML = `
-                <div class="about-content" style="display:block">
-                    <p><strong>SpineBase</strong> provides standardized imaging measurements for clinical and research teams.</p>
-                    <p>Our mission is to make spine care simple and accessible!</p>
-                    <p><em>Philip Louie, MD</em></p>
-                    <img src="./assets/about-us.png" onerror="this.style.display='none'">
-                </div>`;
-            updateUI(titlePath, true);
-        }
-    }
-
-    async function loadItem(rawPath, itemName) {
-        try {
-            const baseDir = getRelPath(rawPath);
-            const res = await fetch(`${baseDir}${itemName}/index.html`);
-            let html = await res.text();
-
-            const itemFolder = `${baseDir}${itemName}/`;
-            html = html.replace(/src=["'](?:\.\/)?images\/(.*?)["']/g, (m, f) => `src="${itemFolder}images/${f}"`);
-
-            stateStack.push({ type: 'content', label: itemName, html: html });
-            history.pushState({ depth: stateStack.length }, itemName);
-            
-            render();
-            
-        } catch (e) {
-            alert("Document could not be loaded locally.");
-        }
-    }
-
-    init();
-</script>
+    <div id="app">
+        <header>
+            <div class="brand-row">
+                <div class="brand-banner" onclick="resetToHome()">SpineBase</div>
+                <div class="about-link" onclick="showAboutUs()">About Us</div>
+            </div>
+            <div class="nav-section">
+                <button id="back-btn" class="back-btn" onclick="goBack()">← Back</button>
+                <div id="breadcrumb" class="breadcrumb">A centralized resource for spine imaging measurements.</div>
+            </div>
+        </header>
+        <main id="view-container" class="centered"></main>
+    </div>
+    
+    <script src="app.js"></script>
 </body>
 </html>

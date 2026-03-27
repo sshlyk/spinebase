@@ -6,6 +6,10 @@ A single-page, mobile-first web application acting as a dynamic browser for a sp
 ## 2. Data Sources & Relative Path Strategy
 The app assumes a co-located file structure where the HTML, JSON, and resource folders live in the same root directory.
 
+* **`index.html` (The Shell):** Contains the persistent UI (Sticky Header, Breadcrumbs, Main Container) and the CSS framework. It acts as the entry point and imports `app.js`.
+* **`app.js` (The Engine):** Contains all JavaScript logic, including the Manifest loader, state management (Category > Modality > Grid), and the Regex-based asset rewriter.
+* **`about.html` (Standalone Content):** A dedicated HTML file for the "About Us" section. This allows for rich text and image editing without modifying the core application code.
+
 * **Manifest (Local):**
     * **Path:** `./structure.json` (must be in the same folder as `index.html`).
     * **Role:** Defines the navigation hierarchy and provides the `path` and `content` array for each modality.
