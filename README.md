@@ -1,1 +1,1 @@
-# spinebase-public
+# [Spinebase](https://sshlyk.github.io/spinebase/)
