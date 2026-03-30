@@ -94,6 +94,10 @@
         
         #content-viewer { display: none; padding: 10px; background: #fff; }
         #content-viewer img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+        
+        /* Ensure fetched HTML styles don't break the layout */
+        .inline-html-content { line-height: 1.6; }
+        .inline-html-content h1, .inline-html-content h2 { color: var(--primary); }
     </style>
 </head>
 <body>
@@ -105,7 +109,7 @@
                     <input type="text" id="search-input" placeholder="Search measurements..." autocomplete="off">
                     <div id="search-results" class="search-results"></div>
                 </div>
-                <div class="about-link" onclick="window.location.href='about.html'">About</div>
+                <div class="about-link" onclick="loadAbout()">About</div>
             </div>
             <div class="nav-section">
                 <button id="back-btn" class="back-btn" onclick="goBack()">← Back</button>

@@ -130,7 +130,6 @@ function render() {
         const list = document.createElement('div');
         list.className = 'menu-list';
         Object.keys(db).forEach(cat => {
-            // Prune: only show category if it has any content at all
             const hasContent = Object.values(db[cat]).some(mod => mod.content && mod.content.length > 0);
             if (hasContent) {
                 const btn = document.createElement('button');
@@ -152,7 +151,6 @@ function render() {
         const list = document.createElement('div');
         list.className = 'menu-list';
         Object.keys(current.data).forEach(mod => {
-            // Prune: only show modality if it has content items
             if (current.data[mod].content && current.data[mod].content.length > 0) {
                 const btn = document.createElement('button');
                 btn.className = 'menu-item';
@@ -182,7 +180,7 @@ function render() {
     }
     else if (current.type === 'content') {
         viewContainer.className = '';
-        viewContainer.innerHTML = `<div id="content-viewer" style="display:block">${current.html}</div>`;
+        viewContainer.innerHTML = `<div id="content-viewer" class="inline-html-content" style="display:block">${current.html}</div>`;
         updateUI(titlePath);
     }
 }
@@ -198,6 +196,23 @@ async function loadItem(rawPath, itemName) {
         history.pushState({ depth: stateStack.length }, itemName);
         render();
     } catch (e) { alert("Document unavailable."); }
+}
+
+async function loadAbout() {
+    try {
+        const res = await fetch('about.html');
+        if (!res.ok) throw new Error();
+        let html = await res.text();
+        
+        // Reset the stack so About is treated as a primary view
+        stateStack = [{ type: 'content', label: 'About', html: html }];
+        
+        // Use pushState to allow the hardware back button to return home
+        history.pushState({ depth: stateStack.length }, 'About');
+        render();
+    } catch (e) {
+        alert("About page unavailable.");
+    }
 }
 
 async function loadSearchItem(match) {
